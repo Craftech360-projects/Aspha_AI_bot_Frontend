@@ -1,4 +1,4 @@
-// // VideoScreen.jsx
+
 // import { useEffect, useRef, useState } from 'react';
 // import io from 'socket.io-client';
 
@@ -28,22 +28,28 @@
 //   };
 
 //   return (
-//     <div className="w-full h-screen bg-black">
-//            <video
+//     <div className="flex items-center justify-center bg-black w-[1080px] h-[1920px] overflow-hidden"  onClick={() => {
+//       // Allow user interaction to enable audio if autoplay is blocked
+//       if (videoRef.current) {
+//         videoRef.current.muted = false;
+//         videoRef.current.play();
+//       }
+//     }}>
+//       <video
 //         ref={videoRef}
 //         key={currentVideo}
 //         autoPlay
 //         muted
 //         onEnded={handleVideoEnd}
-//         loop={currentVideo === 'default.mp4'} // Loop only the default video
-//         className="w-full h-full object-cover"
+//         loop={currentVideo === 'default.mp4'}
+//         className="w-full h-full object-cover transition-all duration-500"
 //       >
 //         <source src={`/videos/${currentVideo}`} type="video/mp4" />
 //       </video>
-
 //     </div>
 //   );
 // }
+
 
 
 import { useEffect, useRef, useState } from 'react';
@@ -63,9 +69,23 @@ export default function VideoScreen() {
       console.log(`Current video set to: ${videoNum}.mp4`);
     });
 
+    // Listen for stop-video event
+    socket.on('stop-video', () => {
+
+      console.log('Received stop-video event');
+      setCurrentVideo('default.mp4');
+      // if (videoRef.current) {
+      //   videoRef.current.pause();
+      //   videoRef.current.currentTime = 0;
+      // }
+      setCurrentVideo('default.mp4');
+      console.log("playing default video");
+    });
+
     return () => {
-      console.log('Component unmounted, removing socket listener');
+      console.log('Component unmounted, removing socket listeners');
       socket.off('play-video');
+      socket.off('stop-video');
     };
   }, []);
 
@@ -75,12 +95,18 @@ export default function VideoScreen() {
   };
 
   return (
-    <div className="flex items-center justify-center bg-black w-[1080px] h-[1920px] overflow-hidden">
+    <div className="flex items-center justify-center bg-black w-[1080px] h-[1920px] overflow-hidden"  onClick={() => {
+      // Allow user interaction to enable audio if autoplay is blocked
+      if (videoRef.current) {
+        videoRef.current.muted = false;
+        videoRef.current.play();
+      }
+    }}>
       <video
         ref={videoRef}
         key={currentVideo}
         autoPlay
-        muted
+      //  muted
         onEnded={handleVideoEnd}
         loop={currentVideo === 'default.mp4'}
         className="w-full h-full object-cover transition-all duration-500"
@@ -89,4 +115,4 @@ export default function VideoScreen() {
       </video>
     </div>
   );
-}
+} 
