@@ -68,7 +68,18 @@ export default function ButtonScreen() {
     console.log('Emitting stop-video event');
     socket.emit('stop-video');
   };
-
+  useEffect(() => {
+    if (isPlaying) {
+      document.body.style.overflow = 'hidden'; // Disable scrolling
+    } else {
+      document.body.style.overflow = 'auto'; // Re-enable scrolling
+    }
+  
+    // Cleanup
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isPlaying]);
   // Use useEffect to set the onended event handler after the video element is rendered
   useEffect(() => {
     if (videoRef.current) {
@@ -133,7 +144,7 @@ export default function ButtonScreen() {
             autoPlay
             // muted
             controls
-            className="w-full h-auto"
+            className="w-full h-auto max-h-screen"
           />
           {/* Back button over the video */}
           <button

@@ -106,7 +106,7 @@ export default function VideoScreen() {
         ref={videoRef}
         key={currentVideo}
         autoPlay
-      //  muted
+       muted
         onEnded={handleVideoEnd}
         loop={currentVideo === 'default.mp4'}
         className="w-full h-full object-cover transition-all duration-500"
